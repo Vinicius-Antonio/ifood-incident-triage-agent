@@ -245,8 +245,11 @@ def _call_gemini_decision(
     from google import genai
     from google.genai import types
 
+    api_key = (settings.gemini_api_key or "").strip()
+    is_vertex_key = api_key.startswith("AQ.")
     client = genai.Client(
-        api_key=settings.gemini_api_key,
+        vertexai=is_vertex_key,
+        api_key=api_key,
         http_options=types.HttpOptions(timeout=20000),
     )
     try:
