@@ -54,10 +54,8 @@ _CURRENCY_PATTERNS = (
 class LLMDecisionProposal(BaseModel):
     """Structured reasoning output returned by LLM or deterministic policy engine."""
 
-    model_config = ConfigDict(extra="forbid")
-
     action_type: ActionType
-    amount: float = Field(default=0.0, ge=0.0)
+    amount: float = Field(..., ge=0.0)
     justification: str = Field(..., min_length=1)
     policy_reference: str
     customer_response_draft: str = Field(..., min_length=1)
@@ -249,7 +247,7 @@ def _call_gemini_decision(
 
     client = genai.Client(
         api_key=settings.gemini_api_key,
-        http_options=types.HttpOptions(timeout=5000),
+        http_options=types.HttpOptions(timeout=20000),
     )
     try:
         response = client.models.generate_content(
