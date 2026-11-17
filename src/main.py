@@ -3,6 +3,7 @@
 from typing import Optional
 
 from fastapi import FastAPI, Query
+from fastapi.responses import RedirectResponse
 
 from src.agent.graph import resolve_incident
 from src.config import get_settings
@@ -24,6 +25,12 @@ app = FastAPI(
         "com RAG leve, guardrails determinísticos em código e telemetria estruturada."
     ),
 )
+
+
+@app.get("/", include_in_schema=False)
+def redirect_to_docs() -> RedirectResponse:
+    """Redirect root path directly to the interactive Swagger UI documentation."""
+    return RedirectResponse(url="/docs")
 
 
 @app.get("/health")
