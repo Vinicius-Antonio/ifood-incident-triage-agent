@@ -5,8 +5,9 @@ services:
       dockerfile: Dockerfile
     container_name: ifood-incident-triage-agent
     ports:
-      - "8000:8000"
+      - "${PORT:-8000}:${PORT:-8000}"
     environment:
+      PORT: ${PORT:-8000}
       APP_NAME: ${APP_NAME:-iFood Incident Triage Agent}
       APP_ENV: ${APP_ENV:-production}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
@@ -21,7 +22,7 @@ services:
       MAX_DELIVERED_MINUTES_FOR_AUTO_REFUND: ${MAX_DELIVERED_MINUTES_FOR_AUTO_REFUND:-60}
       SQLITE_DB_PATH: ${SQLITE_DB_PATH:-:memory:}
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      test: ["CMD", "python", "-c", "import os, urllib.request; port = os.environ.get('PORT', '8000'); urllib.request.urlopen(f'http://localhost:{port}/health')"]
       interval: 30s
       timeout: 5s
       retries: 3
