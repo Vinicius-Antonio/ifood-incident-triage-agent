@@ -1,0 +1,29 @@
+services:
+  triage-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ifood-incident-triage-agent
+    ports:
+      - "8000:8000"
+    environment:
+      APP_NAME: ${APP_NAME:-iFood Incident Triage Agent}
+      APP_ENV: ${APP_ENV:-production}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      LLM_PROVIDER: ${LLM_PROVIDER:-mock}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      MAX_AUTO_COUPON_BRL: ${MAX_AUTO_COUPON_BRL:-20.0}
+      MAX_AUTO_REFUND_BRL: ${MAX_AUTO_REFUND_BRL:-50.0}
+      HIGH_VALUE_ORDER_THRESHOLD_BRL: ${HIGH_VALUE_ORDER_THRESHOLD_BRL:-100.0}
+      MAX_DELIVERED_MINUTES_FOR_AUTO_REFUND: ${MAX_DELIVERED_MINUTES_FOR_AUTO_REFUND:-60}
+      SQLITE_DB_PATH: ${SQLITE_DB_PATH:-:memory:}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
